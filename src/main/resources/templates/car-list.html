@@ -1,0 +1,209 @@
+<!--Car List  -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>DriveX Admin</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+        }
+
+        header {
+            padding: 20px 40px;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .container {
+            padding: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: rgba(0,0,0,0.6);
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+        }
+
+        th {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #b0c7ff;
+        }
+
+        tr {
+            transition: background 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .price {
+            color: #00ffcc;
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            padding: 8px 14px;
+            background: #ff4d4d;
+            color: white;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #ff1a1a;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.6;
+        }
+        .dashboard {
+		    display: grid;
+		    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		    gap: 20px;
+		    padding: 30px 40px;
+		}
+
+		.card {
+		    background: rgba(255,255,255,0.08);
+		    border-radius: 18px;
+		    padding: 24px;
+		    backdrop-filter: blur(10px);
+		    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+		}
+		
+		.card h3 {
+		    font-size: 14px;
+		    opacity: 0.7;
+		    margin-bottom: 10px;
+		}
+		
+		.card p {
+		    font-size: 28px;
+		    font-weight: 600;
+		    margin: 0;
+		}
+		
+		.card.cars { border-left: 4px solid #00ffcc; }
+		.card.value { border-left: 4px solid #00c3ff; }
+		.card.avg { border-left: 4px solid #ffcc00; }
+        
+    </style>
+</head>
+
+<body>
+
+<header>
+    🚗 DriveX — Supercar Inventory Admin
+</header>
+<div style="padding: 20px 40px;">
+    <a href="/showNewCarForm"
+       style="
+           padding: 12px 24px;
+           background: linear-gradient(135deg, #00ffcc, #0077ff);
+           color: #000;
+           border-radius: 30px;
+           font-weight: 600;
+           text-decoration: none;
+           box-shadow: 0 0 15px rgba(0,255,204,0.6);
+       ">
+        + Add Super Car
+    </a>
+</div>
+<div class="dashboard">
+
+    <div class="card cars">
+        <h3>Total Cars</h3>
+        <p th:text="${totalCars}"></p>
+    </div>
+
+    <div class="card value">
+        <h3>Total Inventory Value</h3>
+        <p th:text="'₹ ' + ${#numbers.formatDecimal(totalValue, 0, 'COMMA', 0, 'POINT')}"></p>
+    </div>
+
+    <div class="card avg">
+        <h3>Average Car Price</h3>
+        <p th:text="'₹ ' + ${#numbers.formatDecimal(avgPrice, 0, 'COMMA', 0, 'POINT')}"></p>
+    </div>
+
+</div>
+
+<div class="container">
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Image</th>
+                <th>Year</th>
+                <th>Fuel</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="car : ${cars}">
+                <td th:text="${car.id}"></td>
+                <td th:text="${car.brand}"></td>
+                <td th:text="${car.model}"></td>
+                 <td>
+			        <img th:src="${car.imageUrl}"
+			             style="width:120px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,.6)">
+			    </td>
+                <td th:text="${car.year}"></td>
+                <td th:text="${car.fuelType}"></td>
+                <td class="price" th:text="'₹ ' + ${car.price}"></td>
+                <td>
+				    <a class="delete-btn"
+				       th:href="@{/showEditCarForm/{id}(id=${car.id})}"
+				       style="background:#00c3ff;">
+				        Edit
+				    </a>
+				
+				    <a class="delete-btn"
+				       th:href="@{/deleteCar/{id}(id=${car.id})}"
+				       onclick="return confirm('Delete this car?');">
+				        Delete
+				    </a>
+				</td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    <footer>
+        DriveX Admin Panel • Luxury Inventory System
+    </footer>
+
+</div>
+
+</body>
+</html>
